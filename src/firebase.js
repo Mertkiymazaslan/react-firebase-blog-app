@@ -1,10 +1,12 @@
-import firebase from  'firebase/compat/app';
-import 'firebase/compat/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "@firebase/firestore"
 
 //BU PROJEYİ GİTHUBA KOYARKEN LOCAL.ENV DOSYASI OLMUYOR BUNA BİR ALTERNATİF BUL!
 //BU PROJEYİ GİTHUBA KOYARKEN LOCAL.ENV DOSYASI OLMUYOR BUNA BİR ALTERNATİF BUL!
 
-const app = firebase.initializeApp({
+const app = initializeApp({
     // apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     // authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
     // projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
@@ -19,6 +21,7 @@ const app = firebase.initializeApp({
     appId: "1:90123735454:web:b8eb842a17476148d4468f"
 });
 
-export const auth = app.auth()
-export const provider = new firebase.auth.GoogleAuthProvider();
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const provider = new GoogleAuthProvider();
 export default app

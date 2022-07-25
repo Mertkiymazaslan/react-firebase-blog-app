@@ -3,30 +3,32 @@ import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Signup = () => {
+  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { login, signInWithGoogle } = useAuth();
+  const passwordConfirmRef = useRef();
+  const { signup, signInWithGoogle, updateName } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  //BU PROJEYİ GİTHUBA KOYARKEN LOCAL.ENV DOSYASI OLMUYOR BUNA BİR ALTERNATİF BUL!
-  //BU PROJEYİ GİTHUBA KOYARKEN LOCAL.ENV DOSYASI OLMUYOR BUNA BİR ALTERNATİF BUL!
-  //BU PROJEYİ GİTHUBA KOYARKEN LOCAL.ENV DOSYASI OLMUYOR BUNA BİR ALTERNATİF BUL!
-  //BU PROJEYİ GİTHUBA KOYARKEN LOCAL.ENV DOSYASI OLMUYOR BUNA BİR ALTERNATİF BUL!                BU YORUM SATIRLARI FİREBASE.JSDEN DE SİL
-
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      return setError("Passwords do not match"); //we are returning to break this function if error occured.
+    }
 
     try {
       setError("");
       setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
+      await signup(emailRef.current.value, passwordRef.current.value);
+      await updateName(nameRef.current.value);
       navigate("/");
     } catch (error) {
       console.log(error.message);
-      setError("Failed to log in");
+      setError("Failed to create an account");
     }
     setLoading(false);
   }
@@ -36,7 +38,7 @@ const Login = () => {
       setError("");
       setLoading(true);
       await signInWithGoogle();
-      navigate("/");
+      navigate("/")
     } catch (error) {
       console.log(error.message);
       setError("Failed to log in");
@@ -45,12 +47,16 @@ const Login = () => {
   };
 
   return (
-    <>
+    <div className="loginSignup">
       <Card>
         <Card.Body>
-          <h2 className="text-center mb-4">Log In</h2>
+          <h2 className="text-center mb-4">Sıgn Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
+            <Form.Group id="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control ref={nameRef} required />
+            </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />
@@ -59,22 +65,27 @@ const Login = () => {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" ref={passwordRef} required />
             </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control type="password" ref={passwordConfirmRef} required />
+            </Form.Group>
             <Button disabled={loading} className="w-100 mt-3" type="submit">
-              Log In
+              Sign Up
             </Button>
-            <br/>
           </Form>
-          <button onClick={signInWithGoogleHandler} className='w-100 text-center mt-3 login-with-google-btn'>Sign In with Google</button>
-          <div className="w-100 text-center mt-3">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </div>
+          <button
+            onClick={signInWithGoogleHandler}
+            className="w-100 text-center mt-3 login-with-google-btn"
+          >
+            Sign In with Google
+          </button>
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        Need an account? <Link to="/signup">Sign Up</Link>
+        Already have an account? <Link to="/login">Log In</Link>
       </div>
-    </>
+    </div>
   );
 };
 
-export default Login;
+export default Signup;
