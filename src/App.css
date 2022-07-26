@@ -44,6 +44,16 @@
     margin: auto;
   }
 
+  .createPost{
+    width: 70%;
+    min-width: 400px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .createPageWrapperClass {
     padding: 1rem;
     border: 1px solid #ccc;
@@ -51,6 +61,8 @@
   .createPageEditorClass {
     background-color:rgb(236, 236, 236);
     border: 1px solid #ccc;
+    line-height: 0.9;
+    min-height: 300px;
   }
   .createPageToolbarClass {
     border: 1px solid #ccc;
@@ -58,7 +70,7 @@
 
   .homeEditor{
     pointer-events: none;
-    background-color: lightgray;
+    background-color: rgb(226, 226, 226);
     margin: 5px;
   }
   .none{

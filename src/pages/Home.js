@@ -16,6 +16,7 @@ const Home = () => {
       //getting all the documents in the spesific collection(posts)
       const data = await getDocs(usersCollectionReference);
       setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      console.log(data.docs)
       setLoading(false);
     };
 
@@ -23,7 +24,6 @@ const Home = () => {
   }, []);
 
   const htmlToDraftBox = (html) => {
-    console.log("adfsdfsd");
     const blocksFromHtml = htmlToDraft(html);
     const { contentBlocks, entityMap } = blocksFromHtml;
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);

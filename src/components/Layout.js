@@ -113,7 +113,7 @@ const Layout = ({ children }) => {
             </ListItem> 
           )}
 
-          {currentUser && (
+          {!currentUser && (
             <ListItem button onClick={() => navigate("/login")}>
               <ListItemIcon>{<ExitToApp color="secondary" />}</ListItemIcon>
               <ListItemText primary="Log In" />
