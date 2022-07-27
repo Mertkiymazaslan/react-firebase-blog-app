@@ -3,10 +3,10 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import htmlToDraft from "html-to-draftjs";
 import { EditorState, ContentState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
 import { auth } from "../firebase";
-import { IconButton } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
+import PostCard from "../components/PostCard";
+import { Container, Grid } from "@material-ui/core";
+import Masonry from "react-masonry-css";
 
 const MyPosts = () => {
   const [posts, setPosts] = useState([]);
@@ -26,45 +26,37 @@ const MyPosts = () => {
     getPosts();
   }, []);
 
-  const htmlToDraftBox = (html) => {
-    const blocksFromHtml = htmlToDraft(html);
-    const { contentBlocks, entityMap } = blocksFromHtml;
-    const contentState = ContentState.createFromBlockArray(
-      contentBlocks,
-      entityMap
-    );
-    return EditorState.createWithContent(contentState);
-  };
-
-  const deletePost = async(id) => {
+  const deletePost = async (id) => {
     const postDoc = doc(db, "posts", id);
     await deleteDoc(postDoc);
-    setPosts(posts.filter(post => post.id !== id));
+    setPosts(posts.filter((post) => post.id !== id));
+  };
+
+  const breakPoints = {
+    default: 3,
+    1350: 2,
+    1000: 1
   }
 
+
   return (
-    <>
+    <Container>
       {loading ? (
         <h1>loading..</h1>
       ) : (
-        posts
-          .filter((post) => post.owner === auth.currentUser.displayName)
-          .map((post) => (
-            <div>
-              <IconButton onClick={() => deletePost(post.id)}>
-                <DeleteIcon />
-              </IconButton>
-              <Editor
-                key={post.id}
-                editorState={htmlToDraftBox(post.text)}
-                wrapperClassName="homeWrapper"
-                editorClassName="homeEditor"
-                toolbarClassName="none"
-              />
-            </div>
-          ))
+        <Masonry
+          breakpointCols={breakPoints}
+          className="my-masonry-grid"
+          columnClassName="my-masonry-grid_column"
+        >
+          {posts
+            .filter((post) => post.owner === auth.currentUser.displayName)
+            .map((post) => (
+                <PostCard post={post} deleteHandler={deletePost} />
+            ))}
+        </Masonry>
       )}
-    </>
+    </Container>
   );
 };
 

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import htmlToDraft from "html-to-draftjs";
-import { EditorState, ContentState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
+import { Grid } from "@material-ui/core";
+import PostCard from "../components/PostCard";
+import {Container} from "@material-ui/core";
+import Masonry from "react-masonry-css";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -23,29 +24,29 @@ const Home = () => {
     getPosts();
   }, []);
 
-  const htmlToDraftBox = (html) => {
-    const blocksFromHtml = htmlToDraft(html);
-    const { contentBlocks, entityMap } = blocksFromHtml;
-    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-    return EditorState.createWithContent(contentState);
+  const breakPoints = {
+    default: 3,
+    1350: 2,
+    1000: 1
   }
 
   return (
-    <>
+    <Container>
       {loading ? (
         <h1>loading..</h1>
       ) : (
-        posts.map((post) => (
-          <Editor
-            key={post.id}
-            editorState={htmlToDraftBox(post.text)}
-            wrapperClassName="homeWrapper"
-            editorClassName="homeEditor"
-            toolbarClassName="none"
-          />
-        ))
+        <Masonry
+          breakpointCols={breakPoints}
+          className="my-masonry-grid"
+          columnClassName="my-masonry-grid_column">
+          {posts.map((post) => (
+            <div key={post.id}>
+              <PostCard post={post}/>
+            </div>
+          ))}
+        </Masonry>
       )}
-    </>
+    </Container>
   );
 };
 
